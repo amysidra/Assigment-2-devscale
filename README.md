@@ -1,8 +1,8 @@
 ```
-npm install
-npm run dev
-```
-
-```
-open http://localhost:3000
+Fitur aplikasi :
+1. get all todos
+2. get by id
+3. add todo
+4. del todo
+5. update todo
 ```
