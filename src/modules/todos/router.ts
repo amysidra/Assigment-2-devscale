@@ -9,7 +9,7 @@ export const todosRouter = new Hono()
   .get("/", async (c) => {
     const todos = await prisma.todo.findMany();
 
-    if (todos.length === 0 ) {
+    if (todos.length === 0) {
       return c.json({ message: "tidak ada datanya, bang!" }, 404);
     }
 
@@ -35,16 +35,15 @@ export const todosRouter = new Hono()
   // add a todo
   .post("/", zValidator("json", createTodoSchema), async (c) => {
     const body = c.req.valid("json");
-    try{
+    try {
       const newTodo = await prisma.todo.create({
         data: body,
       });
 
       return c.json(newTodo, 201);
-    }catch (error) {
-      return c.json({message: "Tidak berhasil input data", error}, 500)
+    } catch (error) {
+      return c.json({ message: "Tidak berhasil input data", error }, 500);
     }
-    
   })
 
   // delete a todo
@@ -78,6 +77,6 @@ export const todosRouter = new Hono()
 
       return c.json(todoUpdate);
     } catch (error) {
-      c.json({message: "tidak bisa update data", error}, 500);
+      c.json({ message: "tidak bisa update data", error }, 500);
     }
   });
