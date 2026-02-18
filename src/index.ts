@@ -1,19 +1,15 @@
 import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { productRouter } from "./modules/products/router";
-import { reviewRouter } from "./modules/reviews/router";
 import { todosRouter } from "./modules/todos/router";
 
 const app = new Hono()
 
-  .route("/products", productRouter)
-  .route("/reviews", reviewRouter)
-  .route("/todos", todosRouter);
+  .route("/api/todos", todosRouter)
 
-app.get("/", (c) => {
-  return c.json({ Message: "Ahlan wa sahlan, Amy Sidra" }, 200);
-});
+  .get("/", (c) => {
+    return c.json({ Message: "Ahlan wa sahlan, Amy Sidra" }, 200);
+  });
 
 serve(
   {

@@ -9,6 +9,10 @@ export const todosRouter = new Hono()
   .get("/", async (c) => {
     const todos = await prisma.todo.findMany();
 
+    if (todos.length === 0 ) {
+      return c.json({ message: "tidak ada datanya, bang!" }, 404);
+    }
+
     return c.json(todos);
   })
 
@@ -31,11 +35,16 @@ export const todosRouter = new Hono()
   // add a todo
   .post("/", zValidator("json", createTodoSchema), async (c) => {
     const body = c.req.valid("json");
-    const newTodo = await prisma.todo.create({
-      data: body,
-    });
+    try{
+      const newTodo = await prisma.todo.create({
+        data: body,
+      });
 
-    return c.json(newTodo, 201);
+      return c.json(newTodo, 201);
+    }catch (error) {
+      return c.json({message: "Tidak berhasil input data", error}, 500)
+    }
+    
   })
 
   // delete a todo
@@ -51,14 +60,14 @@ export const todosRouter = new Hono()
 
       return c.json(delTodo, 200);
     } catch (error) {
-      return c.json({ message: "Yang mau didelete gak ada" }, 404);
+      return c.json({ message: "gagal delete data", error }, 404);
     }
   })
 
   // update a todo by ID
   .put("/:id", zValidator("json", createTodoSchema), async (c) => {
     const todoID = c.req.param("id");
-    const body = await c.req.valid("json");
+    const body = c.req.valid("json");
     try {
       const todoUpdate = await prisma.todo.update({
         where: {
@@ -69,6 +78,6 @@ export const todosRouter = new Hono()
 
       return c.json(todoUpdate);
     } catch (error) {
-        c.json(error)
+      c.json({message: "tidak bisa update data", error}, 500);
     }
   });
